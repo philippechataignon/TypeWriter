@@ -4,7 +4,7 @@
 // rows are output (right connector)
 
 const byte numChars = 70;
-char receivedChars[numChars];   // an array to store the received data
+unsigned char receivedChars[numChars];   // an array to store the received data
 
 boolean newData = false;
 
@@ -20,23 +20,23 @@ char get_pin_row(char row)
 
 void setup()
 {
-	//Start serial connection
-	Serial.begin(9600);
+       //Start serial connection
+       Serial.begin(9600);
 
-	//Configure pins
-	for (char i = 0; i < 10; i++) {
-		pinMode(get_pin_col(i), INPUT_PULLUP);
-	}
-	for (char i = 0; i < 10; i++) {
-		if (i == 4 || i == 5) {
-			continue;
-		}
-		pinMode(get_pin_row(i), OUTPUT);
-		digitalWrite(get_pin_row(i), HIGH);
-	}
-	// Row 4 is GND
-	pinMode(get_pin_row(4), OUTPUT);
-	digitalWrite(get_pin_row(4), LOW);
+       //Configure pins
+       for (char i = 0; i < 10; i++) {
+               pinMode(get_pin_col(i), INPUT_PULLUP);
+       }
+       for (char i = 0; i < 10; i++) {
+               if (i == 4 || i == 5) {
+                       continue;
+               }
+               pinMode(get_pin_row(i), OUTPUT);
+               digitalWrite(get_pin_row(i), HIGH);
+       }
+       // Row 4 is GND
+       pinMode(get_pin_row(4), OUTPUT);
+       digitalWrite(get_pin_row(4), LOW);
 }
 
 /* Mapping definition */
@@ -267,27 +267,22 @@ void key(Combi combi)
 	}
 }
 
-void write_character(int character)
+void write_character(unsigned char c)
 {
 	/* We assume the character is latin-1 encoded */
-	int i;
-	for (i = 0; i < 255; i++) {
-		if (mapping[i].latin1 == character) {
-			break;
-		}
-
-		if (mapping[i].latin1 == 0) {
-			i = 255;
+	unsigned char i;
+    /* loop until sentinel */
+	for (i = 0; mapping[i].latin1; i++) {
+		if (mapping[i].latin1 == c) {
 			break;
 		}
 	}
-
-	if (i < 255) {
+	if (mapping[i].latin1) {
 		key(mapping[i].combi);
 	} else {
-		key(SPACE);				/* Default to space if char is not found */
+		/* Default to space */
+		key(SPACE);
 	}
-
 }
 
 void recv() {
@@ -311,7 +306,7 @@ void recv() {
 
 void cmd() {
     if (newData) {
-        for(char* p = receivedChars; *p != 0; p++) {
+        for(unsigned char* p = receivedChars; *p != 0; p++) {
             write_character(*p);
         }
         write_character('\r');
@@ -319,6 +314,7 @@ void cmd() {
         newData = false;
     }
 }
+
 
 void loop() {
     recv();

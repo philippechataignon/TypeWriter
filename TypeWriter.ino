@@ -3,8 +3,8 @@
 // cols are input (left connector)
 // rows are output (right connector)
 
-const byte numChars = 70;
-unsigned char receivedChars[numChars];   // an array to store the received data
+const byte numChars = 72;
+unsigned char receivedChars[numChars + 1];   // an array to store the received data
 
 boolean newData = false;
 
@@ -16,27 +16,6 @@ char get_pin_col(char col)
 char get_pin_row(char row)
 {
 	return 23 - row;
-}
-
-void setup()
-{
-       //Start serial connection
-       Serial.begin(9600);
-
-       //Configure pins
-       for (char i = 0; i < 10; i++) {
-               pinMode(get_pin_col(i), INPUT_PULLUP);
-       }
-       for (char i = 0; i < 10; i++) {
-               if (i == 4 || i == 5) {
-                       continue;
-               }
-               pinMode(get_pin_row(i), OUTPUT);
-               digitalWrite(get_pin_row(i), HIGH);
-       }
-       // Row 4 is GND
-       pinMode(get_pin_row(4), OUTPUT);
-       digitalWrite(get_pin_row(4), LOW);
 }
 
 /* Mapping definition */
@@ -287,19 +266,16 @@ void write_character(unsigned char c)
 
 void recv() {
     static byte ndx = 0;
-    char rc;
-    while (Serial.available() > 0 && newData == false) {
+    unsigned char rc;
+    while (Serial.available() > 0 && !newData) {
         rc = Serial.read();
-        if (rc == '\r' || rc == '\n') {
+        if (rc == '\r' || rc == '\n' || ndx >= numChars) {
             receivedChars[ndx] = '\0'; // terminate the string
             ndx = 0;
             newData = true;
         } else {
             receivedChars[ndx] = rc;
             ndx++;
-            if (ndx >= numChars) {
-                ndx = numChars - 1;
-            }
         }
     }
 }
@@ -313,6 +289,29 @@ void cmd() {
         Serial.print('.');
         newData = false;
     }
+}
+
+void setup()
+{
+       //Start serial connection
+       Serial.begin(9600);
+
+       //Configure pins
+       for (char i = 0; i < 10; i++) {
+               pinMode(get_pin_col(i), INPUT_PULLUP);
+       }
+       for (char i = 0; i < 10; i++) {
+               if (i == 4 || i == 5) {
+                       continue;
+               }
+               pinMode(get_pin_row(i), OUTPUT);
+               digitalWrite(get_pin_row(i), HIGH);
+       }
+       // Row 4 is GND
+       pinMode(get_pin_row(4), OUTPUT);
+       digitalWrite(get_pin_row(4), LOW);
+
+       Serial.print('.');
 }
 
 

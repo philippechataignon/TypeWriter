@@ -1,9 +1,13 @@
-bool buffer;
-
 // Mapping pin <-> row/col
 // 0 is top, 10 is bottom
 // cols are input (left connector)
 // rows are output (right connector)
+
+const byte numChars = 70;
+char receivedChars[numChars];   // an array to store the received data
+
+boolean newData = false;
+
 char get_pin_col(char col)
 {
 	return 33 - col;
@@ -13,8 +17,6 @@ char get_pin_row(char row)
 {
 	return 23 - row;
 }
-
-
 
 void setup()
 {
@@ -35,9 +37,6 @@ void setup()
 	// Row 4 is GND
 	pinMode(get_pin_row(4), OUTPUT);
 	digitalWrite(get_pin_row(4), LOW);
-
-	Serial.println("~ TypeWriter Panasonic R191 by Xou ~");
-	buffer = true;
 }
 
 /* Mapping definition */
@@ -214,8 +213,6 @@ void activate(char row, char col, bool shift_same_col)
 	char readPin = get_pin_col(col);
 	char writePin = get_pin_row(row);
 
-	//Serial.println("Waiting for low on ");
-	//Serial.print(readPin);
 	while (1) {
 		if (digitalRead(readPin) == LOW) {
 			break;
@@ -293,15 +290,37 @@ void write_character(int character)
 
 }
 
-void loop()
-{
-	if (Serial.available()) {
-		buffer = true;
-		write_character(Serial.read());
-	} else {
-		if (buffer) {
-			buffer = false;
-			Serial.print('.');
-		}
-	}
+void recv() {
+    static byte ndx = 0;
+    char rc;
+    while (Serial.available() > 0 && newData == false) {
+        rc = Serial.read();
+        if (rc == '\r' || rc == '\n') {
+            receivedChars[ndx] = '\0'; // terminate the string
+            ndx = 0;
+            newData = true;
+        } else {
+            receivedChars[ndx] = rc;
+            ndx++;
+            if (ndx >= numChars) {
+                ndx = numChars - 1;
+            }
+        }
+    }
+}
+
+void cmd() {
+    if (newData) {
+        for(char* p = receivedChars; *p != 0; p++) {
+            write_character(*p);
+        }
+        write_character('\r');
+        Serial.print('.');
+        newData = false;
+    }
+}
+
+void loop() {
+    recv();
+    cmd();
 }

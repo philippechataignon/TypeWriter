@@ -1,13 +1,13 @@
+// line buffer
+const unsigned char numChars = 72;
+unsigned char receivedChars[numChars + 1];
+unsigned char ndx = 0;
+boolean newData = false;
+
 // Mapping pin <-> row/col
 // 0 is top, 10 is bottom
 // cols are input (left connector)
 // rows are output (right connector)
-
-const unsigned char numChars = 72;
-unsigned char receivedChars[numChars + 1];      // an array to store the received data
-
-unsigned char ndx = 0;
-boolean newData = false;
 
 static inline char get_pin_col(char col)
 {

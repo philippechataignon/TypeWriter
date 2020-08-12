@@ -154,16 +154,16 @@ const MapElement mapping[] = {
     {211, {7, 2, MOD_ACUTE | MOD_SHIFT}},       /* Ó */
     {242, {7, 2, MOD_AGRAVE}},  /* ò */
     {210, {7, 2, MOD_AGRAVE | MOD_SHIFT}},      /* Ò */
-    {234, 0, 3, MOD_ACIRC},     /* ê */
-    {202, 0, 3, MOD_ACIRC | MOD_SHIFT}, /* Ê */
-    {226, 3, 4, MOD_ACIRC},     /* â */
-    {194, 3, 4, MOD_ACIRC | MOD_SHIFT}, /* Â */
-    {238, 6, 2, MOD_ACIRC},     /* î */
-    {206, 6, 2, MOD_ACIRC | MOD_SHIFT}, /* Î */
-    {251, 6, 3, MOD_ACIRC},     /* û */
-    {219, 6, 3, MOD_ACIRC | MOD_SHIFT}, /* Û */
-    {244, 7, 2, MOD_ACIRC},     /* ô */
-    {212, 7, 2, MOD_ACIRC | MOD_SHIFT}, /* Ô */
+    {234, {0, 3, MOD_ACIRC}},     /* ê */
+    {202, {0, 3, MOD_ACIRC | MOD_SHIFT}}, /* Ê */
+    {226, {3, 4, MOD_ACIRC}},     /* â */
+    {194, {3, 4, MOD_ACIRC | MOD_SHIFT}}, /* Â */
+    {238, {6, 2, MOD_ACIRC}},     /* î */
+    {206, {6, 2, MOD_ACIRC | MOD_SHIFT}}, /* Î */
+    {251, {6, 3, MOD_ACIRC}},     /* û */
+    {219, {6, 3, MOD_ACIRC | MOD_SHIFT}}, /* Û */
+    {244, {7, 2, MOD_ACIRC}},     /* ô */
+    {212, {7, 2, MOD_ACIRC | MOD_SHIFT}}, /* Ô */
     {10, {8, 4, MOD_NO}},       /* \n */
     {13, {8, 4, MOD_NO}},       /* \r */
     {32, {3, 9, MOD_NO}},       /* Space */
@@ -172,8 +172,8 @@ const MapElement mapping[] = {
     {17, {7, 0, MOD_CODE}},     /* Auto LF */
     {18, {0, 0, MOD_CODE}},     /* LSet */
     {19, {0, 1, MOD_CODE}},     /* RSet */
-    {15, {6, 3, MOD_CODE}},     /* Underline */
-    {14, {1, 7, MOD_CODE}},     /* Bold */
+    {15, {6, 3, MOD_CODE}},     /* CTRL-N Underline */
+    {14, {1, 7, MOD_CODE}},     /* CTRL-O Bold */
     {0, {0, 0, MOD_NO}}         /* Sentinel */
 };
 

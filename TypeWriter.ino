@@ -3,17 +3,18 @@
 // cols are input (left connector)
 // rows are output (right connector)
 
-const byte numChars = 72;
+const unsigned char numChars = 72;
 unsigned char receivedChars[numChars + 1];      // an array to store the received data
 
+unsigned char ndx = 0;
 boolean newData = false;
 
-char get_pin_col(char col)
+static inline char get_pin_col(char col)
 {
     return 33 - col;
 }
 
-char get_pin_row(char row)
+static inline char get_pin_row(char row)
 {
     return 23 - row;
 }
@@ -192,22 +193,20 @@ void activate(char row, char col, bool shift_same_col)
     char readPin = get_pin_col(col);
     char writePin = get_pin_row(row);
 
-    while (1) {
-        if (digitalRead(readPin) == LOW) {
-            break;
-        }
-    }
+    /* wait LOW state */
+    while (!digitalRead(readPin) == LOW);
+
     digitalWrite(writePin, LOW);
+
     if (shift_same_col) {
         digitalWrite(shiftWritePin, LOW);
     }
 
-    while (1) {
-        if (digitalRead(readPin) == HIGH) {
-            break;
-        }
-    }
+    /* wait HIGH state */
+    while (!digitalRead(readPin) == HIGH);
+
     digitalWrite(writePin, HIGH);
+
     if (shift_same_col) {
         digitalWrite(shiftWritePin, HIGH);
     }
@@ -266,7 +265,6 @@ void write_character(unsigned char c)
 
 void recv()
 {
-    static byte ndx = 0;
     unsigned char rc;
     while (Serial.available() > 0 && !newData) {
         rc = Serial.read();

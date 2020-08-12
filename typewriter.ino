@@ -49,8 +49,8 @@ void key(Combi combi)
         activate(combi.row, combi.col, (combi.mod & MOD_SHIFT)
                  && combi.col == SHIFT.col);
     }
-    if (combi.row == 8 && combi.col == 4) {
-        /* return, let it breathe */
+    if (combi.mod & MOD_DELAY) {
+        /* let it breathe */
         delay(300);
     } else {
         delay(75);

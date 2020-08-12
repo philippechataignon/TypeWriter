@@ -26,7 +26,8 @@ typedef enum {
     MOD_CODE = 2,
     MOD_ACUTE = 4,
     MOD_AGRAVE = 8,
-    MOD_ACIRC = 16
+    MOD_ACIRC = 16,
+    MOD_DELAY = 32
 } Modifier;
 
 typedef struct {
@@ -167,12 +168,12 @@ const MapElement mapping[] = {
     {212, {7, 2, MOD_ACIRC | MOD_SHIFT}}, /* Ô */
     {32, {3, 9, MOD_NO}},       /* Space */
     {127, {9, 0, MOD_NO}},      /* Backspace */
-    {10, {8, 4, MOD_NO}},       /* CTRL-J Line Feed */
-    {12, {8, 4, MOD_CODE}},     /* CTRL-L Page feed */
-    {13, {8, 4, MOD_NO}},       /* CTRL-M Carriage Return */
-    {14, {1, 7, MOD_CODE}},     /* CTRL-N Bold */
-    {15, {6, 3, MOD_CODE}},     /* CTRL-O Underline */
-    {17, {7, 0, MOD_CODE}},     /* CTRL-Q Auto LF */
+    {10, {8, 4, MOD_NO | MOD_DELAY}},       /* CTRL-J Line Feed */
+    {12, {8, 4, MOD_CODE | MOD_DELAY}},     /* CTRL-L Page feed */
+    {13, {8, 4, MOD_NO | MOD_DELAY}},       /* CTRL-M Carriage Return */
+    {14, {1, 7, MOD_CODE | MOD_DELAY}},     /* CTRL-N Bold */
+    {15, {6, 3, MOD_CODE | MOD_DELAY}},     /* CTRL-O Underline */
+    {17, {7, 0, MOD_CODE | MOD_DELAY}},     /* CTRL-Q Auto LF */
     {18, {0, 0, MOD_CODE}},     /* CTRL-R LSet */
     {19, {0, 1, MOD_CODE}},     /* CTRL-S RSet */
     {0, {0, 0, MOD_NO}}         /* Sentinel */

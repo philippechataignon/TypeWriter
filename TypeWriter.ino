@@ -40,7 +40,7 @@ typedef struct {
 
 } MapElement;
 
-const MapElement mapping[255] = {
+const MapElement mapping[] = {
     {49, {0, 0, MOD_NO}},       /* 1 */
     {50, {0, 1, MOD_NO}},       /* 2 */
     {114, {0, 2, MOD_NO}},      /* r */

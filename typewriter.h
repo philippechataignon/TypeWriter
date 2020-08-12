@@ -165,16 +165,16 @@ const MapElement mapping[] = {
     {219, {6, 3, MOD_ACIRC | MOD_SHIFT}}, /* Û */
     {244, {7, 2, MOD_ACIRC}},     /* ô */
     {212, {7, 2, MOD_ACIRC | MOD_SHIFT}}, /* Ô */
-    {10, {8, 4, MOD_NO}},       /* \n */
-    {13, {8, 4, MOD_NO}},       /* \r */
     {32, {3, 9, MOD_NO}},       /* Space */
     {127, {9, 0, MOD_NO}},      /* Backspace */
-    {12, {8, 4, MOD_CODE}},     /* Page feed */
-    {17, {7, 0, MOD_CODE}},     /* Auto LF */
-    {18, {0, 0, MOD_CODE}},     /* LSet */
-    {19, {0, 1, MOD_CODE}},     /* RSet */
-    {15, {6, 3, MOD_CODE}},     /* CTRL-N Underline */
-    {14, {1, 7, MOD_CODE}},     /* CTRL-O Bold */
+    {10, {8, 4, MOD_NO}},       /* CTRL-J Line Feed */
+    {12, {8, 4, MOD_CODE}},     /* CTRL-L Page feed */
+    {13, {8, 4, MOD_NO}},       /* CTRL-M Carriage Return */
+    {14, {1, 7, MOD_CODE}},     /* CTRL-N Bold */
+    {15, {6, 3, MOD_CODE}},     /* CTRL-O Underline */
+    {17, {7, 0, MOD_CODE}},     /* CTRL-Q Auto LF */
+    {18, {0, 0, MOD_CODE}},     /* CTRL-R LSet */
+    {19, {0, 1, MOD_CODE}},     /* CTRL-S RSet */
     {0, {0, 0, MOD_NO}}         /* Sentinel */
 };
 

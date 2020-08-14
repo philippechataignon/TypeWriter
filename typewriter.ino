@@ -39,6 +39,11 @@ void key(Combi combi)
         key(BACKSPACE);
         key(AGRAVE);
     }
+
+    if (combi.mod & MOD_KBD2) {
+        key(KBD2);
+    }
+
     for (int i = 0; i < 2; i++) {
         if (combi.mod & MOD_SHIFT) {
             activate(SHIFT.row, SHIFT.col, false);
@@ -49,9 +54,12 @@ void key(Combi combi)
         activate(combi.row, combi.col, (combi.mod & MOD_SHIFT)
                  && combi.col == SHIFT.col);
     }
+    if (combi.mod & MOD_KBD2) {
+        key(KBD1);
+    }
     if (combi.mod & MOD_DELAY) {
         /* let it breathe */
-        delay(300);
+        delay(500);
     } else {
         delay(75);
     }

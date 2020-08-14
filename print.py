@@ -21,7 +21,6 @@ def main():
         ser.timeout = 1
         wait_ready(ser)
         ser.timeout = 60
-        ser.write(b"\n");
         for line in sys.stdin:
             if not args.latin1:
                 line = unicodedata.normalize("NFC", line).encode("latin1", "ignore")

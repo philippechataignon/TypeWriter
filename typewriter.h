@@ -27,7 +27,8 @@ typedef enum {
     MOD_ACUTE = 4,
     MOD_AGRAVE = 8,
     MOD_ACIRC = 16,
-    MOD_DELAY = 32
+    MOD_DELAY = 32,
+    MOD_KBD2 = 64
 } Modifier;
 
 typedef struct {
@@ -43,14 +44,15 @@ typedef struct {
 } MapElement;
 
 const MapElement mapping[] = {
-    {10, {8, 4, MOD_NO | MOD_DELAY}},   /* CTRL-J Line Feed */
-    {12, {8, 4, MOD_CODE | MOD_DELAY}}, /* CTRL-L Page feed */
-    {13, {8, 4, MOD_NO | MOD_DELAY}},   /* CTRL-M Carriage Return */
-    {14, {1, 7, MOD_CODE | MOD_DELAY}}, /* CTRL-N Bold */
-    {15, {6, 3, MOD_CODE | MOD_DELAY}}, /* CTRL-O Underline */
-    {17, {7, 0, MOD_CODE | MOD_DELAY}}, /* CTRL-Q Auto LF */
-    {18, {0, 0, MOD_CODE}},     /* CTRL-R LSet */
-    {19, {0, 1, MOD_CODE}},     /* CTRL-S RSet */
+    {6, {6, 4, MOD_CODE | MOD_DELAY}},  /* Code-l CTRL-F Force */
+    {7, {1, 7, MOD_CODE | MOD_DELAY}},  /* Code-b CTRL-G Bold */
+    {10, {8, 4, MOD_NO | MOD_DELAY}},   /* Return CTRL-J Line Feed */
+    {12, {8, 4, MOD_CODE | MOD_DELAY}}, /* Code-Return CTRL-L Page feed */
+    {13, {8, 4, MOD_NO | MOD_DELAY}},   /* Return CTRL-M Carriage Return */
+    {18, {2, 4, MOD_CODE | MOD_DELAY}}, /* Code-k CTRL-R Init */
+    {21, {6, 3, MOD_CODE | MOD_DELAY}}, /* Code-U CTRL-U Underline */
+    {23, {7, 1, MOD_CODE | MOD_DELAY}}, /* Code-= CTRL-W kbd1 */
+    {24, {9, 0, MOD_CODE | MOD_DELAY}}, /* Code-= CTRL-X kbd2 */
     {32, {3, 9, MOD_NO}},       /* Space */
     {33, {0, 0, MOD_SHIFT}},    /* ! */
     {34, {0, 1, MOD_SHIFT}},    /* " */
@@ -186,6 +188,8 @@ const Combi ACUTE = { 8, 0, MOD_NO };
 const Combi AGRAVE = { 8, 0, MOD_SHIFT };
 const Combi SPACE = { 3, 9, MOD_NO };
 const Combi BACKSPACE = { 9, 0, MOD_NO };
+const Combi KBD1 = {7, 1, MOD_CODE | MOD_DELAY};
+const Combi KBD2 = {9, 0, MOD_CODE | MOD_DELAY};
 
 const char shiftWritePin = get_pin_row(SHIFT.row);
 

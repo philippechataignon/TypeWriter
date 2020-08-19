@@ -108,6 +108,12 @@ void setup()
 
 void loop()
 {
+    // line buffer
+    const unsigned char numChars = 72;
+    unsigned char receivedChars[numChars + 1];
+    unsigned char ndx = 0;
+    boolean newData = false;
+
     unsigned char rc;
     while (Serial.available() > 0 && !newData) {
         rc = Serial.read();

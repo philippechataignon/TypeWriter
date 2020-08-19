@@ -83,34 +83,6 @@ void write_character(unsigned char c)
     }
 }
 
-void recv()
-{
-    unsigned char rc;
-    while (Serial.available() > 0 && !newData) {
-        rc = Serial.read();
-        if (rc == '\r' || rc == '\n' || ndx >= numChars) {
-            receivedChars[ndx] = '\0';  // terminate the string
-            ndx = 0;
-            newData = true;
-        } else {
-            receivedChars[ndx] = rc;
-            ndx++;
-        }
-    }
-}
-
-void cmd()
-{
-    if (newData) {
-        for (unsigned char *p = receivedChars; *p != 0; p++) {
-            write_character(*p);
-        }
-        write_character('\r');
-        Serial.print('.');
-        newData = false;
-    }
-}
-
 void setup()
 {
     //Start serial connection
@@ -136,6 +108,24 @@ void setup()
 
 void loop()
 {
-    recv();
-    cmd();
+    unsigned char rc;
+    while (Serial.available() > 0 && !newData) {
+        rc = Serial.read();
+        if (rc == '\r' || rc == '\n' || ndx >= numChars) {
+            receivedChars[ndx] = '\0';  // terminate the string
+            ndx = 0;
+            newData = true;
+        } else {
+            receivedChars[ndx] = rc;
+            ndx++;
+        }
+    }
+    if (newData) {
+        for (unsigned char *p = receivedChars; *p != 0; p++) {
+            write_character(*p);
+        }
+        write_character('\r');
+        Serial.print('.');
+        newData = false;
+    }
 }

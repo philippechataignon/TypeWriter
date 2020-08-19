@@ -61,7 +61,7 @@ void key(Combi combi)
         /* let it breathe */
         delay(500);
     } else {
-        delay(75);
+        delay(100);
     }
 }
 
@@ -121,7 +121,7 @@ void loop()
             receivedChars[ndx] = '\0';  // terminate the string
             ndx = 0;
             newData = true;
-        } else {
+        } else if (ndx < numChars) {
             receivedChars[ndx] = rc;
             ndx++;
         }

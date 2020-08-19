@@ -59,9 +59,9 @@ void key(Combi combi)
     }
     if (combi.mod & MOD_DELAY) {
         /* let it breathe */
-        delay(500);
+        delay(1000);
     } else {
-        delay(100);
+        delay(75);
     }
 }
 
@@ -106,32 +106,35 @@ void setup()
     Serial.print('.');
 }
 
+// line buffer
+const unsigned char numChars = 72;
+unsigned char receivedChars[numChars + 1];
+unsigned char ndx = 0;
+
 void loop()
 {
-    // line buffer
-    const unsigned char numChars = 72;
-    unsigned char receivedChars[numChars + 1];
-    unsigned char ndx = 0;
-    boolean newData = false;
-
     unsigned char rc;
-    while (Serial.available() > 0 && !newData) {
+    if(Serial.available()) {
         rc = Serial.read();
-        if (rc == '\r' || rc == '\n' || ndx >= numChars) {
+        // line feed received : send the line to typewriter
+        if (rc == '\r' || rc == '\n') {
             receivedChars[ndx] = '\0';  // terminate the string
+            // send the line character by character
+            for (unsigned char *p = receivedChars; *p != 0; p++) {
+                write_character(*p);
+            }
+            // carriage return
+            write_character('\r');
+            // allow client to send next line
+            Serial.print('.');
+            // reinit buffer index
             ndx = 0;
-            newData = true;
-        } else if (ndx < numChars) {
-            receivedChars[ndx] = rc;
-            ndx++;
+        } else {
+            // chars after numChars are lost
+            if (ndx < numChars) {
+                receivedChars[ndx] = rc;
+                ndx++;
+            }
         }
-    }
-    if (newData) {
-        for (unsigned char *p = receivedChars; *p != 0; p++) {
-            write_character(*p);
-        }
-        write_character('\r');
-        Serial.print('.');
-        newData = false;
     }
 }

@@ -190,7 +190,5 @@ const char shiftWritePin = get_pin_row(SHIFT.row);
 void activate(char row, char col, bool shift_same_col);
 void key(Combi combi);
 void write_character(unsigned char c);
-void recv();
-void cmd();
 void setup();
 void loop();

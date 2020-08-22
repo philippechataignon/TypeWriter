@@ -1,16 +1,16 @@
 #include "typewriter.h"
 
-void activate(char output, char input, bool shift_same_input)
+void activate(Combi combi)
 {
-    char readPin = get_pin_input(input);
-    char writePin = get_pin_output(output);
+    char readPin = get_pin_input(combi.input);
+    char writePin = get_pin_output(combi.output);
 
     /* wait LOW state */
     while (!(digitalRead(readPin) == LOW));
 
     digitalWrite(writePin, LOW);
 
-    if (shift_same_input) {
+    if (combi.mod & MOD_SHIFT && combi.input == SHIFT.input) {
         digitalWrite(shiftWritePin, LOW);
     }
 
@@ -19,7 +19,7 @@ void activate(char output, char input, bool shift_same_input)
 
     digitalWrite(writePin, HIGH);
 
-    if (shift_same_input) {
+    if (combi.mod & MOD_SHIFT && combi.input == SHIFT.input) {
         digitalWrite(shiftWritePin, HIGH);
     }
 }
@@ -46,13 +46,12 @@ void key(Combi combi)
 
     for (int i = 0; i < 2; i++) {
         if (combi.mod & MOD_SHIFT) {
-            activate(SHIFT.output, SHIFT.input, false);
+            activate(SHIFT);
         }
         if (combi.mod & MOD_CODE) {
-            activate(CODE.output, CODE.input, false);
+            activate(CODE);
         }
-        activate(combi.output, combi.input, (combi.mod & MOD_SHIFT)
-                 && combi.input == SHIFT.input);
+        activate(combi);
     }
     if (combi.mod & MOD_KBD2) {
         key(KBD1);

@@ -1,16 +1,11 @@
-// Mapping pin <-> row/col
-// 0 is top, 10 is bottom
-// cols are input (left connector)
-// rows are output (right connector)
-
-static inline char get_pin_col(char col)
+static inline char get_pin_input(char input)
 {
-    return 33 - col;
+    return 33 - input;
 }
 
-static inline char get_pin_row(char row)
+static inline char get_pin_output(char output)
 {
-    return 23 - row;
+    return 23 - output;
 }
 
 /* Mapping definition */
@@ -26,8 +21,8 @@ typedef enum {
 } Modifier;
 
 typedef struct {
-    char row;
-    char col;
+    char output;
+    char input;
     char mod;
 } Combi;
 
@@ -185,9 +180,9 @@ const Combi BACKSPACE = { 9, 0, MOD_NO };
 const Combi KBD1 = {7, 1, MOD_CODE | MOD_DELAY};
 const Combi KBD2 = {9, 0, MOD_CODE | MOD_DELAY};
 
-const char shiftWritePin = get_pin_row(SHIFT.row);
+const char shiftWritePin = get_pin_output(SHIFT.output);
 
-void activate(char row, char col, bool shift_same_col);
+void activate(char output, char input, bool shift_same_input);
 void key(Combi combi);
 void write_character(unsigned char c);
 void setup();

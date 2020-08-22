@@ -1,16 +1,16 @@
 #include "typewriter.h"
 
-void activate(char row, char col, bool shift_same_col)
+void activate(char output, char input, bool shift_same_input)
 {
-    char readPin = get_pin_col(col);
-    char writePin = get_pin_row(row);
+    char readPin = get_pin_input(input);
+    char writePin = get_pin_output(output);
 
     /* wait LOW state */
     while (!(digitalRead(readPin) == LOW));
 
     digitalWrite(writePin, LOW);
 
-    if (shift_same_col) {
+    if (shift_same_input) {
         digitalWrite(shiftWritePin, LOW);
     }
 
@@ -19,7 +19,7 @@ void activate(char row, char col, bool shift_same_col)
 
     digitalWrite(writePin, HIGH);
 
-    if (shift_same_col) {
+    if (shift_same_input) {
         digitalWrite(shiftWritePin, HIGH);
     }
 }
@@ -46,13 +46,13 @@ void key(Combi combi)
 
     for (int i = 0; i < 2; i++) {
         if (combi.mod & MOD_SHIFT) {
-            activate(SHIFT.row, SHIFT.col, false);
+            activate(SHIFT.output, SHIFT.input, false);
         }
         if (combi.mod & MOD_CODE) {
-            activate(CODE.row, CODE.col, false);
+            activate(CODE.output, CODE.input, false);
         }
-        activate(combi.row, combi.col, (combi.mod & MOD_SHIFT)
-                 && combi.col == SHIFT.col);
+        activate(combi.output, combi.input, (combi.mod & MOD_SHIFT)
+                 && combi.input == SHIFT.input);
     }
     if (combi.mod & MOD_KBD2) {
         key(KBD1);
@@ -90,18 +90,18 @@ void setup()
 
     //Configure pins
     for (char i = 0; i < 10; i++) {
-        pinMode(get_pin_col(i), INPUT_PULLUP);
+        pinMode(get_pin_input(i), INPUT_PULLUP);
     }
     for (char i = 0; i < 10; i++) {
         if (i == 4 || i == 5) {
             continue;
         }
-        pinMode(get_pin_row(i), OUTPUT);
-        digitalWrite(get_pin_row(i), HIGH);
+        pinMode(get_pin_output(i), OUTPUT);
+        digitalWrite(get_pin_output(i), HIGH);
     }
     // Row 4 is GND
-    pinMode(get_pin_row(4), OUTPUT);
-    digitalWrite(get_pin_row(4), LOW);
+    pinMode(get_pin_output(4), OUTPUT);
+    digitalWrite(get_pin_output(4), LOW);
 
     Serial.print('.');
 }

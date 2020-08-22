@@ -110,8 +110,16 @@ bool run_once = true;
 
 void loop() {
     if (run_once) {
-        for (char i = 0; i < 10; i++) {
-            for (char j = 0; j < 10; j++) {
+        for (char i = 2; i < 9; i++) {
+            for (char j = 0; j < 9; j++) {
+                if (j==4 || j==5)
+                    continue;
+                if (i==6)
+                    continue;
+                if (i==4 && j == 7)
+                    continue;
+                if (i==2 && j == 3)
+                    continue;
                 write_character('0' + i);
                 write_character(' ');
                 write_character('0' + j);
@@ -119,7 +127,7 @@ void loop() {
                 Combi combi;
                 combi.input = i;
                 combi.output = j;
-                combi.mod =MOD_NO;
+                combi.mod = MOD_no;
                 activate(combi);
                 write_character('\n');
             }

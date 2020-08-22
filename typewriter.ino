@@ -32,14 +32,16 @@ void key(Combi combi)
     if (combi.mod & MOD_AGRAVE) {
         key(AGRAVE);
     }
-
+    if (combi.mod & MOD_CEDILLE) {
+        key(CEDILLE);
+        key(BACKSPACE);
+    }
     if (combi.mod & MOD_ACIRC) {
         key(ACUTE);
         key(SPACE);
         key(BACKSPACE);
         key(AGRAVE);
     }
-
     if (combi.mod & MOD_KBD2) {
         key(KBD2);
     }
@@ -53,6 +55,7 @@ void key(Combi combi)
         }
         activate(combi);
     }
+
     if (combi.mod & MOD_KBD2) {
         key(KBD1);
     }

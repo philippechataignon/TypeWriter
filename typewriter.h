@@ -17,13 +17,14 @@ typedef enum {
     MOD_AGRAVE = 8,
     MOD_ACIRC = 16,
     MOD_DELAY = 32,
-    MOD_KBD2 = 64
+    MOD_KBD2 = 64,
+    MOD_CEDILLE = 128
 } Modifier;
 
 typedef struct {
     char output;
     char input;
-    char mod;
+    byte mod;
 } Combi;
 
 typedef struct {
@@ -133,6 +134,7 @@ const MapElement mapping[] = {
     {193, {3, 4, MOD_ACUTE | MOD_SHIFT}},       /* Á */
     {194, {3, 4, MOD_ACIRC | MOD_SHIFT}},       /* Â */
     {196, {8, 5, MOD_SHIFT}},   /* Ä */
+    {199, {3, 8, MOD_SHIFT | MOD_CEDILLE}}, /* Ç */
     {200, {0, 3, MOD_AGRAVE | MOD_SHIFT}},      /* È */
     {201, {0, 3, MOD_ACUTE | MOD_SHIFT}},       /* É */
     {202, {0, 3, MOD_ACIRC | MOD_SHIFT}},       /* Ê */
@@ -152,6 +154,7 @@ const MapElement mapping[] = {
     {225, {3, 4, MOD_ACUTE}},   /* á */
     {226, {3, 4, MOD_ACIRC}},   /* â */
     {228, {8, 5, MOD_NO}},      /* ä */
+    {231, {3, 8, MOD_CEDILLE}}, /* ç */
     {232, {0, 3, MOD_AGRAVE}},  /* è */
     {233, {0, 3, MOD_ACUTE}},   /* é */
     {234, {0, 3, MOD_ACIRC}},   /* ê */
@@ -179,7 +182,7 @@ const Combi SPACE = { 3, 9, MOD_NO };
 const Combi BACKSPACE = { 9, 0, MOD_NO };
 const Combi KBD1 = {7, 1, MOD_CODE | MOD_DELAY};
 const Combi KBD2 = {9, 0, MOD_CODE | MOD_DELAY};
-
+const Combi CEDILLE = {2, 7, MOD_NO};
 const char shiftWritePin = get_pin_output(SHIFT.output);
 
 void activate(char output, char input, bool shift_same_input);

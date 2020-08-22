@@ -104,39 +104,27 @@ void setup()
     // Row 4 is GND
     pinMode(get_pin_output(4), OUTPUT);
     digitalWrite(get_pin_output(4), LOW);
-
-    Serial.print('.');
 }
 
-// line buffer
-const unsigned char numChars = 72;
-unsigned char receivedChars[numChars + 1];
-unsigned char ndx = 0;
+bool run_once = true;
 
-void loop()
-{
-    unsigned char rc;
-    if(Serial.available()) {
-        rc = Serial.read();
-        // line feed received : send the line to typewriter
-        if (rc == '\r' || rc == '\n') {
-            receivedChars[ndx] = '\0';  // terminate the string
-            // send the line character by character
-            for (unsigned char *p = receivedChars; *p != 0; p++) {
-                write_character(*p);
-            }
-            // carriage return
-            write_character('\r');
-            // allow client to send next line
-            Serial.print('.');
-            // reinit buffer index
-            ndx = 0;
-        } else {
-            // chars after numChars are lost
-            if (ndx < numChars) {
-                receivedChars[ndx] = rc;
-                ndx++;
+void loop() {
+    if (run_once) {
+        for (char i = 0; i < 10; i++) {
+            for (char j = 0; j < 10; j++) {
+                write_character('0' + i);
+                write_character(' ');
+                write_character('0' + j);
+                write_character(' ');
+                Combi combi;
+                combi.input = i;
+                combi.output = j;
+                combi.mod =MOD_NO;
+                activate(combi);
+                write_character('\n');
             }
         }
     }
+    run_once = false;
 }
+

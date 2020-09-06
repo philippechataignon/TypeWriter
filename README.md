@@ -36,11 +36,11 @@ keyboard.
 ### The keyboard
 
 They are 2 keyboards connectors, each with 10 pins. A keyboard is basically a
-matrix of switches. To test it for example, by jumping pin 4 from left
-connector to pin 0 of right connector, the typewriter will print an 'e' (and
+matrix of switches. To test it for example, by jumping pin 4 from input
+connector to pin 0 of output connector, the typewriter will print an 'e' (and
 repeat if you leave to jumper wire).
 
-So first thing to do is to map all the key to their corresponding pins couple.
+So first thing to do is to map all the key to their corresponding couple.
 To do that, it could be as simple as using the continuity tester function of a
 multimeter, connecting it to one pin of each connector then trying all key
 until it beeps.
@@ -48,45 +48,43 @@ until it beeps.
 At the end, we got this marvelous table for the KX-R191
 
 ```
-+-----+-----+-------+-----------+-----+----------+-----+-----+-------+-------+----------------+
-| R\C |  0  |   1   |     2     |  3  |    4     |  5  |  6  |   7   |   8   |       9        |
-+-----+-----+-------+-----------+-----+----------+-----+-----+-------+-------+----------------+
-|   0 | 1   | 2     | r         | e   | g        | h   |     | #     |       |                |
-|   1 | ⇼   |       | q         | w   | f        | d   |     | b     | n     |                |
-|   2 | 4   | 3     | t         | z   | k        | j   |     | ,     | m     |                |
-|   3 | 5   | 6     | Tab       |     | a        | s   |     | v     | c     | Space          |
-|   4 |                                      GND                                              |
-|   5 |                                  CAPS LOCK LED                                        |
-|   6 | 8   | 7     | i         | u   | l        | ö   |     | .     | -     | Tab+           |
-|   7 | 9   | 0     | o         | p   | CapsLock |     |     | y     | x     | Code           |
-|   8 | ´   | ß     | +         | ü   | Return   | ä   |     | Shift |       | QuickEraseLine |
-|   9 | ←   | Print | Backspace |     |          |     |     |       | Reloc | ↨              |
-+-----+-----+-------+-----------+-----+----------+-----+-----+-------+-------+----------------+
++-------------------+-----+-------+-----------+-----+----------+-----+-------+-------+-------+----------------+
+| OUTPUT / INPUT    |  0  |   1   |     2     |  3  |    4     |  5  |  (6)  |   7   |   8   |       9        |
++-------------------+-----+-------+-----------+-----+----------+-----+-------+-------+-------+----------------+
+|   0               | 1   | 2     | r         | e   | g        | h   |       | #     |       |                |
+|   1               | ⇼   |       | q         | w   | f        | d   |       | b     | n     |                |
+|   2               | 4   | 3     | t         | z   | k        | j   |       | ,     | m     |                |
+|   3               | 5   | 6     | Tab       |     | a        | s   |       | v     | c     | Space          |
+|   6               | 8   | 7     | i         | u   | l        | ö   |       | .     | -     | Tab+           |
+|   7               | 9   | 0     | o         | p   | CapsLock |     |       | y     | x     | Code           |
+|   8               | ´   | ß     | +         | ü   | Return   | ä   |       | Shift |       | QuickEraseLine |
+|   9               | ←   | Print | Backspace |     |          |     |       |       | Reloc | ↨              |
++------------------ +-----+-------+-----------+-----+----------+-----+-------+-------+-------+----------------+
+|   (4)             |                                      GND                                                |
+|   (5)             |                                  CAPS LOCK LED                                          |
++------------------ +-----+-------+-----------+-----+----------+-----+-------+-------+-------+----------------+
 ```
-
-For now on, I may refer to the left connector as the "column" connector, and
-the right connector as the "row" connector.
 
 ### Emulating the keyboard
 
-Once mapping is known, we got to emulate keyboard with all the connector pins.
+Once mapping is known, we got to emulate keyboard with all the connector p  ins.
 The principle for guessing which keys are pressed is that the typewriter will
-sequencially "select" a column and "look" if any row is enabled.
+sequencially "select" a input and "look" if any output is enabled.
 
-Electronically speaking, all pins from left connectors will be sequencially (in
-decreasing order) temporary pulled down for 200µs and if one (or more) pin of
-the right is also pulled down, it means that the key is pressed. 
+Electronically speaking, all pins from input connector will be sequencially in
+decreasing order temporary pulled down for 200µs and if one (or more) pin of
+output connector is also pulled down, it means that the key is pressed. 
 
-So on the arduino side (function `void activate(...)`), if we want for example
-to print an 'e' (row 0, col 3), we have to wait that pin 3 of left connector is
-down, then we set pin 0 of right connector to `LOW` until pin 3 is `HIGH`
-again, then we set pin 0 of right to `HIGH` again (else the typewriter will
-think that we've also pressed an 'r').
+On the arduino side (function `void activate(...)`), if we want for example
+to print an 'e', we have to wait that *input pin 3* is `LOW`
+then we set *output pin 0* to `LOW` until *input pin 3* is `HIGH`
+again, then we set *output pin 0* to `HIGH` again (to avoid the typewriter 
+thinks we've pressed an 'r').
 
-`activate` function have a special case for letters that are on the same column
-as shift as they are the only valid case of two keys of the same column pressed
+`activate` function have a special case for letters that are on the *input pin 7*,
+the same as `shift`. This is the only valid case of two keys of the same input pin pressed
 together (the only other modifier key is Code and has no valid "partner" key in
-its column).
+its *input pin 9*).
 
 ### Arduino code
 
@@ -123,12 +121,12 @@ things:
 
 Use an arduino with enough digital pins such as the Arduino Mega 2560. 
 
-- Connect all the 10 pins of the left connector to the arduino (although the 6
-  is useless and can be omited)
+- Connect all the 10 (or 9 because 6 is useless and can be omited) pins 
+  of the input connector (the left one) to the arduino
 - Connect all the pins *except* 5 (caps lock led) and 4 (connect it the the
-  ground) to the arduino
+  ground) of the output connector (the right one) to the arduino
 
-Set the correct pin mapping in the `get_col_pin` and `get_row_pin` function of
+Set the correct pin mapping in the `get_pin_input` and `get_pin_output` function of
 the code.
 
 Then `make && make upload` and you're in business.
@@ -139,5 +137,3 @@ The only requirements for python is `pyserial`, install it system-wide or in a
 virtualenv.
 
 Then run `python3 print.py --help` to see all options.
-
-

@@ -69,20 +69,9 @@ void key(Combi combi)
 
 void write_character(unsigned char c)
 {
-    /* We assume the character is latin-1 encoded */
-    unsigned char i;
-    /* loop until sentinel */
-    for (i = 0; mapping[i].latin1; i++) {
-        if (mapping[i].latin1 == c) {
-            break;
-        }
-    }
-    if (mapping[i].latin1) {
-        key(mapping[i].combi);
-    } else {
-        /* Default to space */
-        key(SPACE);
-    }
+    // if c is mapped, call key
+    if (mapping[c].input != -1)
+        key(mapping[c]);
 }
 
 void setup()

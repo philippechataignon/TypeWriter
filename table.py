@@ -15,9 +15,9 @@ with open("table.txt") as f:
 for i, item in enumerate(t):
     if item is not None:
         if i >= 32:
-            print(f"{{ {item[1]}, {item[2]}, {item[3]} }},    // char {i} : {bytes([i]).decode('latin1')}")
+            print(f"{{ {item[2]}, {item[1]}, {item[3]} }},    // char {i} : {bytes([i]).decode('latin1')}")
         else:
-            print(f"{{ {item[1]}, {item[2]}, {item[3]} }},    // char {i}")
+            print(f"{{ {item[2]}, {item[1]}, {item[3]} }},    // char {i}")
     else:
         print(f"{{-1, -1, MOD_NO}},    // char {i} unmapped")
 

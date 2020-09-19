@@ -17,6 +17,7 @@
 
 /* 75 ms = 1172 * 64 us */
 #define DELAY 1172
+#define LONGDELAY (10 * DELAY)
 
 typedef struct {
     uint8_t buff[256];
@@ -92,15 +93,23 @@ ISR(TIMER1_OVF_vect)
 {
     cli();
     timer_stop();
+    Combi combi = SPACE;
     if (receive.head != receive.tail) {
         uint8_t ch = receive.buff[receive.tail++];
         uint8_t delta = receive.head - receive.tail;
         if (delta < LIMIT_LOW) {
             xon();
         }
-        write_char(ch);
+        combi = mapping[ch];
+        if (combi.input != -1) {
+            key(combi);
+        }
+        if (combi.mod & MOD_DELAY) {
+            timer_start(LONGDELAY);
+        } else {
+            timer_start(DELAY);
+        }
     }
-    timer_start(DELAY);
     sei();
 }
 
@@ -185,7 +194,7 @@ void key(Combi combi)
 
 void write_char(uint8_t c)
 {
-    // if c is mapped, call key
+    // if c is mapped,V call key
     if (mapping[c].input != -1)
         key(mapping[c]);
 }

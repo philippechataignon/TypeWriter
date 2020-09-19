@@ -1,3 +1,7 @@
+    {1, {8, 7, MOD_NO }},    // char 1 SHIFT
+    {2, {7, 9, MOD_NO }},    // char 2 CODE
+    {3, {8, 0, MOD_NO }},    // char 3 ACUTE
+    {4, {8, 0, MOD_SHIFT }}, // char 4 AGRAVE
     {6, {6, 4, MOD_CODE | MOD_DELAY}},  /* Code-l CTRL-F Force */
     {7, {1, 7, MOD_CODE | MOD_DELAY}},  /* Code-b CTRL-G Bold */
     {10, {8, 4, MOD_NO | MOD_DELAY}},   /* Return CTRL-J Line Feed */

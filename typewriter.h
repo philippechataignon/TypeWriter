@@ -153,7 +153,7 @@ const Combi mapping[256] = {
     {-1, -1, MOD_NO},    // char 124 unmapped
     {-1, -1, MOD_NO},    // char 125 unmapped
     {-1, -1, MOD_NO},    // char 126 unmapped
-    { 0, 9, MOD_NO },    // char 127 : 
+    { 0, 9, MOD_NO },    // char 127 : backspace
     {-1, -1, MOD_NO},    // char 128 unmapped
     {-1, -1, MOD_NO},    // char 129 unmapped
     {-1, -1, MOD_NO},    // char 130 unmapped
@@ -291,6 +291,9 @@ const Combi ACUTE = mapping[3];
 const Combi AGRAVE = mapping[4];
 const Combi BACKSPACE = mapping[127];
 const Combi CEDILLE = mapping[44];
+const Combi SPACE = mapping[32];
+const Combi KBD1 = mapping[23];
+const Combi KBD2 = mapping[24];
 const char shiftWritePin = get_pin_output(SHIFT.output);
 
 void activate(char output, char input, bool shift_same_input);

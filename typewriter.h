@@ -1,28 +1,28 @@
-static inline char get_pin_input(char input)
+static inline int8_t get_pin_input(int8_t input)
 {
     return 33 - input;
 }
 
-static inline char get_pin_output(char output)
+static inline int8_t get_pin_output(int8_t output)
 {
     return 23 - output;
 }
 
 /* Mapping definition */
-const byte MOD_NO = 0;
-const byte MOD_SHIFT = 1;
-const byte MOD_CODE = 2;
-const byte MOD_ACUTE = 4;
-const byte MOD_AGRAVE = 8;
-const byte MOD_ACIRC = 16;
-const byte MOD_DELAY = 32;
-const byte MOD_KBD2 = 64;
-const byte MOD_CEDILLE = 128;
+#define MOD_NO 0
+#define MOD_SHIFT 1
+#define MOD_CODE 2
+#define MOD_ACUTE 4
+#define MOD_AGRAVE 8
+#define MOD_ACIRC 16
+#define MOD_DELAY 32
+#define MOD_KBD2 64
+#define MOD_CEDILLE 128
 
 typedef struct {
-    char input;
-    char output;
-    byte mod;
+    int8_t input;
+    int8_t output;
+    uint8_t mod;
 } Combi;
 
 const Combi mapping[256] = {
@@ -285,19 +285,20 @@ const Combi mapping[256] = {
 };
 
 /* Control combinations */
-const Combi SHIFT = mapping[1];
-const Combi CODE = mapping[2];
-const Combi ACUTE = mapping[3];
-const Combi AGRAVE = mapping[4];
-const Combi BACKSPACE = mapping[127];
-const Combi CEDILLE = mapping[44];
-const Combi SPACE = mapping[32];
-const Combi KBD1 = mapping[23];
-const Combi KBD2 = mapping[24];
-const char shiftWritePin = get_pin_output(SHIFT.output);
+#define SHIFT  mapping[1]
+#define CODE  mapping[2]
+#define ACUTE  mapping[3]
+#define AGRAVE  mapping[4]
+#define BACKSPACE  mapping[127]
+#define CEDILLE  mapping[44]
+#define SPACE  mapping[32]
+#define KBD1  mapping[23]
+#define KBD2  mapping[24]
 
-void activate(char output, char input, bool shift_same_input);
+#define shiftWritePin get_pin_output(SHIFT.output);
+
+void activate(Combi combi);
 void key(Combi combi);
-void write_character(unsigned char c);
+void write_char(uint8_t c);
 void setup();
 void loop();

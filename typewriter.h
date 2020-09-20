@@ -295,7 +295,10 @@ const Combi mapping[256] = {
 #define KBD1  mapping[23]
 #define KBD2  mapping[24]
 
-#define shiftWritePin get_pin_output(SHIFT.output);
+#define shiftWritePin get_pin_output(SHIFT.output)
+
+#define set_bit(VAR, BIT) (VAR |= _BV(BIT))
+#define clr_bit(VAR, BIT) (VAR &= ~_BV(BIT))
 
 void activate(Combi combi);
 void key(Combi combi);

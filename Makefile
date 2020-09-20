@@ -1,12 +1,11 @@
 CC=avr-gcc -mmcu=atmega328p -DF_CPU=16000000UL -Wall
-CCFLAGS=-Os 
-
+CCFLAGS=-Os -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/variants/standard
 
 %.o: %.c
 	$(CC) $(CCFLAGS) -c -o $@ $<
 
 %elf: %o
-	$(CC) -o $@ $<
+	$(CC) -o $@ $< libcore.a
 
 %.hex: %.elf
 	avr-objcopy -O ihex $< $@

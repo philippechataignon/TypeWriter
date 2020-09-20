@@ -1,7 +1,4 @@
-#ifndef F_CPU
-#define F_CPU 16000000UL
-#endif
-
+#include <Arduino.h>
 #include <stdlib.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -130,23 +127,23 @@ void activate(Combi combi)
     int8_t readPin = get_pin_input(combi.input);
     int8_t writePin = get_pin_output(combi.output);
 
-//    /* wait LOW state */
-//    while (!(digitalRead(readPin) == LOW));
-//
-//    digitalWrite(writePin, LOW);
-//
-//    if (combi.mod & MOD_SHIFT && combi.input == SHIFT.input) {
-//        digitalWrite(shiftWritePin, LOW);
-//    }
-//
-//    /* wait HIGH state */
-//    while (!(digitalRead(readPin) == HIGH));
-//
-//    digitalWrite(writePin, HIGH);
-//
-//    if (combi.mod & MOD_SHIFT && combi.input == SHIFT.input) {
-//        digitalWrite(shiftWritePin, HIGH);
-//    }
+    /* wait LOW state */
+    while (!(digitalRead(readPin) == LOW));
+
+    digitalWrite(writePin, LOW);
+
+    if (combi.mod & MOD_SHIFT && combi.input == SHIFT.input) {
+        digitalWrite(shiftWritePin, LOW);
+    }
+
+    /* wait HIGH state */
+    while (!(digitalRead(readPin) == HIGH));
+
+    digitalWrite(writePin, HIGH);
+
+    if (combi.mod & MOD_SHIFT && combi.input == SHIFT.input) {
+        digitalWrite(shiftWritePin, HIGH);
+    }
 }
 
 void key(Combi combi)
@@ -184,12 +181,6 @@ void key(Combi combi)
     if (combi.mod & MOD_KBD2) {
         key(KBD1);
     }
-    if (combi.mod & MOD_DELAY) {
-        /* let it breathe */
-//        delay(1000);
-    } else {
-//        delay(75);
-    }
 }
 
 void write_char(uint8_t c)
@@ -199,71 +190,25 @@ void write_char(uint8_t c)
         key(mapping[c]);
 }
 
-//void setup()
-//{
-//    //Start serial connection
-//    Serial.begin(9600);
-//
-//    //Configure pins
-//    for (int8_t i = 0; i < 10; i++) {
-//        pinMode(get_pin_input(i), INPUT_PULLUP);
-//    }
-//    for (int8_t i = 0; i < 10; i++) {
-//        if (i == 4 || i == 5) {
-//            continue;
-//        }
-//        pinMode(get_pin_output(i), OUTPUT);
-//        digitalWrite(get_pin_output(i), HIGH);
-//    }
-//    // Row 4 is GND
-//    pinMode(get_pin_output(4), OUTPUT);
-//    digitalWrite(get_pin_output(4), LOW);
-//
-//    Serial.print('.');
-//}
-//
-//// line buffer
-//const unsigned int8_t numChars = 72;
-//unsigned int8_t receivedChars[numChars + 1];
-//unsigned int8_t ndx = 0;
-//
-//void loop()
-//{
-//    unsigned int8_t rc;
-//    if(Serial.available()) {
-//        rc = Serial.read();
-//        // line feed received : send the line to typewriter
-//        if (rc == '\r' || rc == '\n') {
-//            receivedChars[ndx] = '\0';  // terminate the string
-//            // send the line character by character
-//            for (unsigned int8_t *p = receivedChars; *p != 0; p++) {
-//                write_character(*p);
-//            }
-//            // carriage return
-//            write_character('\r');
-//            // allow client to send next line
-//            Serial.print('.');
-//            // reinit buffer index
-//            ndx = 0;
-//        } else {
-//            // chars after numChars are lost
-//            if (ndx < numChars) {
-//                receivedChars[ndx] = rc;
-//                ndx++;
-//            }
-//        }
-//    }
-//}
-
 int main(void)
 {
     usart_init(9600);
+
+    for (int8_t i = 0; i < 10; i++) {
+        pinMode(get_pin_input(i), INPUT_PULLUP);
+    }
+    for (int8_t i = 0; i < 10; i++) {
+        if (i == 4 || i == 5) {
+            continue;
+        }
+        pinMode(get_pin_output(i), OUTPUT);
+        digitalWrite(get_pin_output(i), HIGH);
+    }
+    // Row 4 is GND
+    pinMode(get_pin_output(4), OUTPUT);
+    digitalWrite(get_pin_output(4), LOW);
+
     timer_start(DELAY);
-
-    /* set pin 5 low to turn led off */
-    DDRB |= _BV(DDB5);
-    PORTB &= ~_BV(PORTB5);
-
     sei();
     xon();
 

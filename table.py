@@ -14,10 +14,16 @@ with open("table.txt") as f:
             #print(l)
 for i, item in enumerate(t):
     if item is not None:
+        input = int(item[2])
+        if input > 6:
+            input = input -1
+        output = int(item[1])
+        if output > 3:
+            output = output - 2
         if i >= 32:
-            print(f"{{ {item[2]}, {item[1]}, {item[3]} }},    // char {i} : {bytes([i]).decode('latin1')}")
+            print(f"{{ {input}, {output}, {item[3]} }},    // char {i} : {bytes([i]).decode('latin1')}")
         else:
-            print(f"{{ {item[2]}, {item[1]}, {item[3]} }},    // char {i}")
+            print(f"{{ {input}, {output}, {item[3]} }},    // char {i}")
     else:
         print(f"{{-1, -1, MOD_NO}},    // char {i} unmapped")
 

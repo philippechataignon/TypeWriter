@@ -124,8 +124,8 @@ ISR(USART_RX_vect)
 
 void activate(Combi combi)
 {
-    int8_t readPin = get_pin_input(combi.input);
-    int8_t writePin = get_pin_output(combi.output);
+    int8_t readPin = input_pin[combi.input];
+    int8_t writePin = output_pin[combi.output];
 
     /* wait LOW state */
     while (!(digitalRead(readPin) == LOW));
@@ -194,19 +194,15 @@ int main(void)
 {
     usart_init(9600);
 
-    for (int8_t i = 0; i < 10; i++) {
-        pinMode(get_pin_input(i), INPUT_PULLUP);
+    for (int8_t i = 0; i < INPUT_NUM; i++) {
+        pinMode(input_pin[i], INPUT_PULLUP);
     }
-    for (int8_t i = 0; i < 10; i++) {
-        if (i == 4 || i == 5) {
-            continue;
-        }
-        pinMode(get_pin_output(i), OUTPUT);
-        digitalWrite(get_pin_output(i), HIGH);
+    for (int8_t i = 0; i < OUTPUT_NUM; i++) {
+        pinMode(output_pin[i], OUTPUT);
     }
-    // Row 4 is GND
-    pinMode(get_pin_output(4), OUTPUT);
-    digitalWrite(get_pin_output(4), LOW);
+
+    pinMode(GROUND_PIN, OUTPUT);
+    digitalWrite(GROUND_PIN, LOW);
 
     timer_start(DELAY);
     sei();

@@ -1,12 +1,12 @@
-#define MOD_NO 0
-#define MOD_SHIFT 1
-#define MOD_CODE 2
-#define MOD_ACUTE 4
-#define MOD_AGRAVE 8
-#define MOD_ACIRC 16
-#define MOD_DELAY 32
-#define MOD_KBD2 64
-#define MOD_CEDILLE 128
+#define MOD_NO      0x00
+#define MOD_SHIFT   0x01
+#define MOD_CODE    0x02
+#define MOD_ACUTE   0x04
+#define MOD_AGRAVE  0x08
+#define MOD_ACIRC   0x10
+#define MOD_DELAY   0x20
+#define MOD_KBD2    0x40
+#define MOD_CEDILLE 0x80
 
 #define INPUT_NUM 9
 #define OUTPUT_NUM 8

@@ -1,2 +1,2 @@
-BOARD_TAG    = mega2560
+BOARD_TAG    = uno
 include /usr/share/arduino/Arduino.mk

@@ -4,7 +4,6 @@
 #include <avr/interrupt.h>
 #include <avr/sleep.h>
 #include <util/delay.h>
-#include "binary.h"
 #include "typewriter.h"
 
 #define BAUD_PRESCALE(fcpu,br) ((fcpu / 16 / br) - 1)
@@ -67,7 +66,7 @@ void xoff()
 
 static void timer_stop()
 {
-    TCCR1B = B00000000;         /* stop timer clock */
+    TCCR1B = 0x00;         /* stop timer clock */
     clr_bit(TIMSK1, TOIE1);     /* disable interrupt */
     set_bit(TIFR1, TOV1);       /* clear interrupt flag */
 }
@@ -81,8 +80,8 @@ static void timer_start(int value)
     clr_bit(TCCR1A, WGM11);
     set_bit(TIFR1, TOV1);
     TCNT1 =  0xFFFF - (value & 0xFFFF);    /* overflow in value * 64 us*/
-    TIMSK1 = B00000001;         /* set the Timer Overflow Interrupt Enable bit */
-    TCCR1B = B00000101;         /* prescaler: 1024 */
+    TIMSK1 = 0x01;         /* set the Timer Overflow Interrupt Enable bit */
+    TCCR1B = 0x05;         /* prescaler: 1024 */
     sei();
 }
 

@@ -1,9 +1,10 @@
-#include <Arduino.h>
 #include <stdlib.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/sleep.h>
 #include <util/delay.h>
+#include <Arduino.h>
+
 #include "typewriter.h"
 
 #define BAUD_PRESCALE(fcpu,br) ((fcpu / 16 / br) - 1)
@@ -37,13 +38,6 @@ void send_byte(uint8_t ch)
 {
     while (!(UCSR0A & _BV(UDRE0)));
     UDR0 = ch;
-}
-
-void send_str(uint8_t str[])
-{
-    for (uint8_t* c = str; *c; c++) {
-        send_byte(*c);
-    }
 }
 
 void xon()
@@ -90,16 +84,22 @@ ISR(TIMER1_OVF_vect)
     cli();
     timer_stop();
     Combi combi = SPACE;
+    // if received since last call
     if (receive.head != receive.tail) {
+        // get received char
         uint8_t ch = receive.buff[receive.tail++];
+        // how many chars in buffer ?
         uint8_t delta = receive.head - receive.tail;
+        // if low, send xon
         if (delta < LIMIT_LOW) {
             xon();
         }
         combi = mapping[ch];
+        // send combi if mapped
         if (combi.input != -1) {
             key(combi);
         }
+        // set delay for next call
         if (combi.mod & MOD_DELAY) {
             timer_start(LONGDELAY);
         } else {
@@ -182,13 +182,6 @@ void key(Combi combi)
     }
 }
 
-void write_char(uint8_t c)
-{
-    // if c is mapped,V call key
-    if (mapping[c].input != -1)
-        key(mapping[c]);
-}
-
 int main(void)
 {
     usart_init(9600);
@@ -203,8 +196,8 @@ int main(void)
     pinMode(GROUND_PIN, OUTPUT);
     digitalWrite(GROUND_PIN, LOW);
 
-    timer_start(DELAY);
     sei();
+    timer_start(DELAY);
     xon();
 
     while(1) {

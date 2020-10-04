@@ -16,6 +16,8 @@
 #define DELAY 1172
 #define LONGDELAY (10 * DELAY)
 
+#define TEST
+
 typedef struct {
     uint8_t buff[256];
     uint8_t volatile head;
@@ -60,9 +62,8 @@ void xoff()
 
 static void timer_stop()
 {
+    TIMSK1 = 0x00;         /* disable interrupt */
     TCCR1B = 0x00;         /* stop timer clock */
-    clr_bit(TIMSK1, TOIE1);     /* disable interrupt */
-    set_bit(TIFR1, TOV1);       /* clear interrupt flag */
 }
 
 /* at 16MHz, 1 tick = 1s / fcpu * div = 1000000 / 16000000 * 1024 = 64 ms */
@@ -70,9 +71,8 @@ static void timer_stop()
 static void timer_start(int value)
 {
     cli(); /* no interrupt because TCNT1 is 16 bits = 2 cycles to write */
-    clr_bit(TCCR1A, WGM10);
-    clr_bit(TCCR1A, WGM11);
-    set_bit(TIFR1, TOV1);
+    TCCR1A = 0x00;      // no compare mode, no WGM
+    TIFR1 = 0x01;       // overflow flag
     TCNT1 =  0xFFFF - (value & 0xFFFF);    /* overflow in value * 64 us*/
     TIMSK1 = 0x01;         /* set the Timer Overflow Interrupt Enable bit */
     TCCR1B = 0x05;         /* prescaler: 1024 */
@@ -127,7 +127,9 @@ void activate(Combi combi)
     int8_t writePin = output_pin[combi.output];
 
     /* wait LOW state */
+#ifndef TEST
     while (!(digitalRead(readPin) == LOW));
+#endif
 
     digitalWrite(writePin, LOW);
 
@@ -136,7 +138,9 @@ void activate(Combi combi)
     }
 
     /* wait HIGH state */
+#ifndef TEST
     while (!(digitalRead(readPin) == HIGH));
+#endif
 
     digitalWrite(writePin, HIGH);
 

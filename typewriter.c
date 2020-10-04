@@ -70,27 +70,27 @@ static void timer_start(int value)
 {
     cli(); /* no interrupt because TCNT1 is 16 bits = 2 cycles to write */
     TCCR1A = 0x00;      // no compare mode, no WGM
-    TCCR1B = 0x05;         /* prescaler: 1024 */
+    TCCR1B = 0x05;      // prescaler: 1024
     TIFR1 = 0x01;       // overflow flag
-    TIMSK1 = 0x01;         /* set the Timer Overflow Interrupt Enable bit */
-    TCNT1 =  0xFFFF - (value & 0xFFFF);    /* overflow in value * 64 us*/
+    TIMSK1 = 0x01;      // set the Timer Overflow Interrupt Enable bit */
+    TCNT1 =  0xFFFF - (value & 0xFFFF);    // overflow in value * 64 us
     sei();
 }
 
 static void timer2_init()
 {
     TCCR2A = 0x00;      // no compare mode, no WGM
-    TCCR2B = 0x05;      // prescaler: 1024
+    TCCR2B = 0x05;      // prescaler: 128 - 1 tick = 8 ms at 16MHz
     TIFR2 = 0x01;       // overflow flag
     TIMSK2 = 0x01;      // set the Timer Overflow Interrupt Enable bit
-    TCNT2 =  6;         // overflow in 250 * 64 us = 16000 us => 625 / s
+    TCNT2 =  6;         // overflow in 250 * 8 us = 1ms
 }
 
 ISR(TIMER2_OVF_vect)
 {
     cli();
     count++;        // increment general counter
-    TCNT2 = 6;      // Rechargement du timer 6
+    TCNT2 = 6;      // reinit timer2 counter
     sei();
 }
 
@@ -142,9 +142,11 @@ void activate(Combi combi)
     int8_t writePin = output_pin[combi.output];
     int8_t add_shift = combi.mod & MOD_SHIFT && combi.input == SHIFT.input;
 
+    // get initial count
     int64_t count_init = count;
+
     // replicate readPin level to writePin during 20 ms = simulate switch
-    while (count - count_init < 125) {
+    while (count - count_init < 20) {
         uint8_t read = digitalRead(readPin);
         digitalWrite(writePin, read);
         if (add_shift) {
@@ -152,7 +154,7 @@ void activate(Combi combi)
         }
     }
     // next 20 ms (total 40ms), put HIGH state = key unpressed
-    while (count - count_init < 250) {
+    while (count - count_init < 40) {
         digitalWrite(writePin, HIGH);
         if (add_shift) {
             digitalWrite(shiftWritePin, HIGH);

@@ -25,8 +25,8 @@ typedef struct {
 } buffer;
 
 buffer receive = {{0}, 0, 0};
-
 uint8_t volatile is_on = 0;
+uint64_t volatile count = 0;
 
 void usart_init(uint32_t baudRate)
 {
@@ -72,10 +72,31 @@ static void timer_start(int value)
 {
     cli(); /* no interrupt because TCNT1 is 16 bits = 2 cycles to write */
     TCCR1A = 0x00;      // no compare mode, no WGM
-    TIFR1 = 0x01;       // overflow flag
-    TCNT1 =  0xFFFF - (value & 0xFFFF);    /* overflow in value * 64 us*/
-    TIMSK1 = 0x01;         /* set the Timer Overflow Interrupt Enable bit */
     TCCR1B = 0x05;         /* prescaler: 1024 */
+    TIFR1 = 0x01;       // overflow flag
+    TIMSK1 = 0x01;         /* set the Timer Overflow Interrupt Enable bit */
+    TCNT1 =  0xFFFF - (value & 0xFFFF);    /* overflow in value * 64 us*/
+    sei();
+}
+
+static void timer2_init()
+{
+    TCCR2A = 0x00;      // no compare mode, no WGM
+    TCCR2B = 0x05;         /* prescaler: 1024 */
+    TIFR2 = 0x01;       // overflow flag
+    TIMSK2 = 0x01;         /* set the Timer Overflow Interrupt Enable bit */
+    TCNT2 =  6;         /* overflow in 250 * 64 us = 16000 us => 625 / s */
+}
+
+ISR(TIMER2_OVF_vect)
+{
+    cli();
+    count++;        // increment general counter
+    TCNT2 = 6;      // Rechargement du timer 6
+    if (count >= 625) {
+        send_byte(0x1);
+        count = 0;
+    }
     sei();
 }
 
@@ -202,6 +223,7 @@ int main(void)
 
     sei();
     timer_start(DELAY);
+    timer2_init();
     xon();
 
     while(1) {

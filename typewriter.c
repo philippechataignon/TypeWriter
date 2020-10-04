@@ -16,8 +16,6 @@
 #define DELAY 1172
 #define LONGDELAY (10 * DELAY)
 
-#define TEST
-
 typedef struct {
     uint8_t buff[256];
     uint8_t volatile head;
@@ -82,10 +80,10 @@ static void timer_start(int value)
 static void timer2_init()
 {
     TCCR2A = 0x00;      // no compare mode, no WGM
-    TCCR2B = 0x05;         /* prescaler: 1024 */
+    TCCR2B = 0x05;      // prescaler: 1024
     TIFR2 = 0x01;       // overflow flag
-    TIMSK2 = 0x01;         /* set the Timer Overflow Interrupt Enable bit */
-    TCNT2 =  6;         /* overflow in 250 * 64 us = 16000 us => 625 / s */
+    TIMSK2 = 0x01;      // set the Timer Overflow Interrupt Enable bit
+    TCNT2 =  6;         // overflow in 250 * 64 us = 16000 us => 625 / s
 }
 
 ISR(TIMER2_OVF_vect)
@@ -93,10 +91,6 @@ ISR(TIMER2_OVF_vect)
     cli();
     count++;        // increment general counter
     TCNT2 = 6;      // Rechargement du timer 6
-    if (count >= 625) {
-        send_byte(0x1);
-        count = 0;
-    }
     sei();
 }
 
@@ -146,27 +140,23 @@ void activate(Combi combi)
 {
     int8_t readPin = input_pin[combi.input];
     int8_t writePin = output_pin[combi.output];
+    int8_t add_shift = combi.mod & MOD_SHIFT && combi.input == SHIFT.input;
 
-    /* wait LOW state */
-#ifndef TEST
-    while (!(digitalRead(readPin) == LOW));
-#endif
-
-    digitalWrite(writePin, LOW);
-
-    if (combi.mod & MOD_SHIFT && combi.input == SHIFT.input) {
-        digitalWrite(shiftWritePin, LOW);
+    int64_t count_init = count;
+    // replicate readPin level to writePin during 20 ms = simulate switch
+    while (count - count_init < 125) {
+        uint8_t read = digitalRead(readPin);
+        digitalWrite(writePin, read);
+        if (add_shift) {
+            digitalWrite(shiftWritePin, read);
+        }
     }
-
-    /* wait HIGH state */
-#ifndef TEST
-    while (!(digitalRead(readPin) == HIGH));
-#endif
-
-    digitalWrite(writePin, HIGH);
-
-    if (combi.mod & MOD_SHIFT && combi.input == SHIFT.input) {
-        digitalWrite(shiftWritePin, HIGH);
+    // next 20 ms (total 40ms), put HIGH state = key unpressed
+    while (count - count_init < 250) {
+        digitalWrite(writePin, HIGH);
+        if (add_shift) {
+            digitalWrite(shiftWritePin, HIGH);
+        }
     }
 }
 
